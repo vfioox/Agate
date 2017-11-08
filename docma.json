@@ -1,0 +1,6 @@
+{
+  "src": [
+    "./src/agate-webserver/**/*.js"
+  ],
+  "dest": "./docs"
+}

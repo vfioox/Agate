@@ -1,0 +1,39 @@
+{
+  "name": "agate",
+  "version": "1.0.0",
+  "description": "Flexible cloud and content aggregation framework",
+  "main": "index.js",
+  "dependencies": {
+    "app-root-path": "^2.0.1",
+    "async": "^2.5.0",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "cookie": "^0.3.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.1",
+    "lodash": "^4.17.4",
+    "memcached": "^2.2.2",
+    "node-cache": "^4.1.1",
+    "randomstring": "^1.1.5",
+    "socket.io": "^2.0.3",
+    "typescript": "^2.5.3"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.32",
+    "docco": "^0.7.0",
+    "eslint": "^4.8.0",
+    "tslint": "^5.7.0",
+    "gulp": "3.9.1",
+    "gulp-concat": "2.6.1",
+    "gulp-count": "0.3.0",
+    "gulp-less": "3.3.0",
+    "gulp-minify-css": "1.2.4",
+    "gulp-sass": "3.1.0",
+    "gulp-watch": "4.3.11"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "vfioox",
+  "license": "ISC"
+}
