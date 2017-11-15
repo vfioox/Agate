@@ -11,11 +11,11 @@ import * as BlueBird from 'bluebird';
 import ConfigEcosystem from './interface/ConfigEcosystem';
 import Environment from './Environment';
 import Plugins from './Plugins';
-import {Application} from 'express3';
-import {Logger} from '../../agate-utility/';
-import {FrontBind} from '../../agate-front';
-import {SessionService} from '../../agate-security';
-import {Exception, ExceptionCodes} from "../../agate-utility/";
+import { Application } from 'express3';
+import { Logger } from '../../agate-utility/';
+import { FrontBind } from '../../agate-front';
+import { SessionService } from '../../agate-security';
+import { Exception, ExceptionCodes } from "../../agate-utility/";
 
 class WebServer {
     public express: Application;
@@ -32,7 +32,6 @@ class WebServer {
             .then((doesExist) => {
                 if (!doesExist && req.originalUrl !== '/login') return res.redirect('/login');
                 if (doesExist && req.originalUrl === '/login') return res.redirect('/');
-                console.log('req1');
                 next();
             })
             .catch((err) => {
@@ -40,6 +39,13 @@ class WebServer {
             });
     };
 
+    /**
+     * Creates an instance of WebServer.
+     * Attaches the middleware for parsing and
+     * parent router rules for redirection
+     * 
+     * @memberOf WebServer
+     */
     constructor() {
         this.express = express();
         this.express.use(cookieParser());
@@ -53,8 +59,11 @@ class WebServer {
 
     /**
      * Mounts according route rules as specified in configuration
-     * @param environment Configuration Ecosystem class instance
-     * @returns promise of an express instance
+     * 
+     * @param {ConfigEcosystem} environment
+     * @returns {Promise<express>}
+     * 
+     * @memberOf WebServer
      */
     public async mount(environment: ConfigEcosystem): Promise<express> {
         let frontBind = new FrontBind(this.sessionService);
@@ -64,12 +73,12 @@ class WebServer {
         let controllers = await this.getPluginControllerConcat(environment);
 
         _.each(routes, (route) => {
-            (<express.Router> router).get(route.route, (req, res) => {
+            (<express.Router>router).get(route.route, (req, res) => {
                 res.sendFile(`${root}/src/plugins/${route.code}/${route.path}`);
-            });
+            }); 
         });
 
-        (<express.Router> router).get('/js/plugins.min.js', (req, res) => {
+        (<express.Router>router).get('/js/plugins.min.js', (req, res) => {
             //let session = sessionOperator.getSession(req);
             let totalConcatScript = '';
             _.each(controllers, (data, controllerIdentifier) => {
@@ -101,8 +110,12 @@ class WebServer {
     /**
      * Handles the plugin exceptions and prints specific messages
      * in the console depending on severity
-     * @param err Exception
-     * @returns an empty object
+     * 
+     * @static
+     * @param {Exception} err
+     * @returns {object} an empty object
+     * 
+     * @memberOf WebServer
      */
     public static handlePluginExceptions(err: Exception): object {
         switch (err.code) {
@@ -117,8 +130,11 @@ class WebServer {
 
     /**
      * Returns routes defined by plugins added to the system
-     * @param environment Configuration Ecosystem class instance
-     * @returns promise of extracted plugin routes
+     * 
+     * @param {ConfigEcosystem} environment
+     * @returns {Promise<object>}
+     * 
+     * @memberOf WebServer
      */
     public async getPluginRoutes(environment: ConfigEcosystem): Promise<object> {
         let plugins;
@@ -154,11 +170,14 @@ class WebServer {
             }
         });
     }
-
+    
     /**
      * Adds a special route for JS injections from plugins
-     * @param environment Configuration Ecosystem class instance
-     * @returns promise of a list of parsed plugin controller injections
+     * 
+     * @param {ConfigEcosystem} environment
+     * @returns {Promise<object>}
+     * 
+     * @memberOf WebServer
      */
     public async getPluginControllerConcat(environment: ConfigEcosystem): Promise<object> {
         let plugins;
@@ -192,11 +211,14 @@ class WebServer {
 
     /**
      * Mounts according route rules as specified in configuration
-     * @param express Current express instance that will be run
-     * @returns promise of a http server with bound listening
+     * 
+     * @param {express} express Current express instance that will be run
+     * @returns {Promise<http.Server>} http server with bound listening
+     * 
+     * @memberOf WebServer
      */
     public startListener(express: express): Promise<http.Server> {
-        let {port} = Environment.config.web;
+        let { port } = Environment.config.web;
         const mainServer = new http.Server(express);
 
         mainServer.listen(port, (err) => {
@@ -213,14 +235,29 @@ class WebServer {
     /**
      * Mounts a new socket io instance on the
      * http listener instance that will run express
-     * @param server Instance of the http listener
-     * @returns a new socket io instance
+     * 
+     * @static
+     * @param {http.Server} server
+     * @returns {Promise<SocketIo>}
+     * 
+     * @memberOf WebServer
      */
     public static bindSocketServer(server: http.Server): Promise<SocketIo> {
         Logger.Std('listener', `Socket has now started`);
         return Promise.resolve(new SocketIo(server));
     }
 
+    /**
+     * Assigns a permissioned callback to the socket
+     * 
+     * @param {string} eventName socket event name
+     * @param {string} flag permission
+     * @param {sio.Socket} socket client instance
+     * @param {Function} handler callback
+     * @returns {Promise<void>}
+     * 
+     * @memberOf WebServer
+     */
     public async socketOn(eventName: string, flag: string, socket: sio.Socket, handler: Function): Promise<void> {
         let session = await this.sessionService.authSocketRequest(eventName, flag, socket);
         console.error(session);
@@ -228,9 +265,12 @@ class WebServer {
     }
 
     /**
-     * Mounts the socket instance to an operator
-     * @param io Current express instance that will be run
-     * @returns void
+     * Assigns a permissioned callback to the socket
+     * 
+     * @param {SocketIo} io class instance
+     * @returns {void}
+     * 
+     * @memberOf WebServer
      */
     public bindSocketOperator(io: SocketIo): void {
         let vm = this;
@@ -240,7 +280,7 @@ class WebServer {
             socket.emit('welcome', true);
 
             vm.socketOn('login', '', socket, (args, callback) => {
-                console.log(args);
+                console.log('login_debug', args);
             })
                 .catch((err) => {
                     Logger.Err('login', err);
