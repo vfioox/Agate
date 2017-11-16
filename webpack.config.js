@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    entry: __dirname + '/src/agate-front/default/apps/admin.jsx',
+    entry: __dirname + '/src/agate-front/default/apps/admin/admin.jsx',
     output: {
         path: __dirname + '/src/agate-front/default/', filename: 'admin-bundle.js'
     },

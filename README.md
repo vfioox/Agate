@@ -1,6 +1,13 @@
 # agate
 NodeJS TypeScript scalable back-end and content aggregation template/barebone
 
+## What is it?
+
+Currently in development, Agate is a to-be modern, quickly deployable, isolated and encrypted cloud/aggregation service
+based on the previous outdated ES5 version.
+
+Agate will be an extensible, testable ecosystem meant for supervision, administration and archiving of various entry-points.
+
 ## Startup
 ```javascript
 async function start() {
