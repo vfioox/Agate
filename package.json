@@ -41,7 +41,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node ./node_modules/webpack/bin/webpack.js --hot"
+    "dev": "node ./node_modules/webpack/bin/webpack.js --hot",
+    "start": "node ./src/index/start.js"
   },
   "author": "vfioox",
   "license": "ISC"
